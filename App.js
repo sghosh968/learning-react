@@ -4,9 +4,14 @@ import ReactDOM from 'react-dom';
 class App extends React.Component {
   constructor(){
     super();
-    this.update = this.update.bind(this);
     this.state = {
-      increasing: false
+      students: [
+        {id: 1, name: "Ajay", branch: "CSE", active: true},
+        {id: 2, name: "Susil", branch: "CE", active: true},
+        {id: 3, name: "Suraj", branch: "ME", active: true},
+        {id: 4, name: "Anmol", branch: "CSE", active: false},
+        {id: 5, name: "Dinesh", branch: "EE", active: true}
+      ]
     }
   }
 
@@ -32,21 +37,36 @@ class App extends React.Component {
     console.log("Mounted ..");
   }
 
-  update() {
-    ReactDOM.render(<App val={this.props.val + 1} />, document.getElementById('app'))
-  }
   render() {
-    console.log("Rendering ..");
-    console.log("Props: increasing = " + this.state.increasing);
+    let rows = this.state.students.map(student => {
+      return(
+        <StudentRow key={student.id} studentData={student} />
+      );
+    })
     return(
-      <button onClick={this.update}>
-      {this.props.val}
-      </button>
+      <table>
+        <tbody>{rows}</tbody>
+      </table>
     )
   }
 }
 
-App.defaultProps = {val: 0}
+class StudentRow extends React.Component {
+  render() {
+    if (this.props.studentData.active){
+      return(
+        <tr>
+          <td>{this.props.studentData.id}</td>
+          <td>{this.props.studentData.name}</td>
+        </tr>
+      );
+    }
+    else{
+      return false;
+    }
+  }
+}
+
 
 export default App;
 
@@ -67,3 +87,4 @@ export default App;
 // -> componentWillReceiveProps(newProps) > is called before a component receives new Props
 // -> componentShouldUpdate(nextProps, nextState) > is called before a component in DOM is updated and output of this method decides if a component shuold be re-rendered or not.
 // -> componentDidUpdate(prevProps, prevState) > is called if component has been updated.
+// 8. Creating components dynamically from a collection
