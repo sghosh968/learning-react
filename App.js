@@ -1,90 +1,54 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-class App extends React.Component{
+
+class App extends React.Component {
   constructor(){
     super();
+    this.update = this.update.bind(this);
     this.state = {
-      val: 0
+      increasing: false
     }
-    this.update = this.update.bind(this)
   }
 
-  update(e){
-    this.setState({
-      val: this.state.val + 1
-    })
+  componentWillReceiveProps(nextProps) {
+    console.log("Next props are :-");
+    console.log(nextProps);
+    this.setState({increasing: nextProps.val > this.props.val});
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.val % 2 === 0;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log("component updated ..");
   }
 
   componentWillMount() {
-    // Called when component is ready to be mounted into the DOM
-    console.log("Mounting ...");
-  }
-
-  render(){
-    console.log("Rendering ..");
-    return (
-      <div>
-        <button onClick={this.update}>{this.state.val}</button>
-      </div>
-    )
+    console.log("Mounting ..");
   }
 
   componentDidMount() {
-    // Called when component is already mounted into the DOM
     console.log("Mounted ..");
   }
 
-  componentWillUnmount() {
-    // Called when component is unmounted from the DOM
-    console.log("component unmounted ..");
+  update() {
+    ReactDOM.render(<App val={this.props.val + 1} />, document.getElementById('app'))
   }
-}
-
-class Slider extends React.Component{
-  render(){
-    return(
-      <div>
-        <input ref="rangeInput" type="range"
-        min="0"
-        max="255"
-        onChange={this.props.update} />
-      </div>
-    )
-  }
-}
-
-class Button extends React.Component {
   render() {
+    console.log("Rendering ..");
+    console.log("Props: increasing = " + this.state.increasing);
     return(
-      <button>{this.props.children}</button>
+      <button onClick={this.update}>
+      {this.props.val}
+      </button>
     )
   }
 }
 
-const Heart = () => <span className="glyphicon glyphicon-heart">love</span>
+App.defaultProps = {val: 0}
 
-class Wrapper extends React.Component {
-  constructor(){
-    super();
-  }
-  mount(){
-    ReactDOM.render(<App />, document.getElementById('a'))
-  }
-  unmount() {
-    ReactDOM.unmountComponentAtNode(document.getElementById('a'))
-  }
-  render(){
-    return(
-      <div>
-        <button onClick={this.mount.bind(this)}>Mount</button>
-        <button onClick={this.unmount.bind(this)}>Unmount</button>
-        <div id="a"></div>
-      </div>
-    )
-  }
-}
-
-export default Wrapper
+export default App;
 
 // Things learned till now :-
 // 1. Use of state
@@ -99,3 +63,7 @@ export default Wrapper
 //      componentDidMount() -> called when component is unmounted from the dom.
 // Other method i.e. used to umnount a component from DOM
 // ReactDOM.unmountComponentAtNode()
+// 7. Learned about few more component lifecycle methods :-
+// -> componentWillReceiveProps(newProps) > is called before a component receives new Props
+// -> componentShouldUpdate(nextProps, nextState) > is called before a component in DOM is updated and output of this method decides if a component shuold be re-rendered or not.
+// -> componentDidUpdate(prevProps, prevState) > is called if component has been updated.
