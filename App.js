@@ -4,36 +4,39 @@ class App extends React.Component{
   constructor(){
     super();
     this.state = {
-      red: 0,
-      green: 0,
-      blue: 0
+      val: 0
     }
     this.update = this.update.bind(this)
   }
 
   update(e){
     this.setState({
-      red: ReactDOM.findDOMNode(this.refs.red.refs.rangeInput).value,
-      green: ReactDOM.findDOMNode(this.refs.green.refs.rangeInput).value,
-      blue: ReactDOM.findDOMNode(this.refs.blue.refs.rangeInput).value
+      val: this.state.val + 1
     })
   }
 
+  componentWillMount() {
+    // Called when component is ready to be mounted into the DOM
+    console.log("Mounting ...");
+  }
+
   render(){
+    console.log("Rendering ..");
     return (
       <div>
-        <Slider ref="red" update={this.update} />
-        {this.state.red}
-        <br />
-        <Slider ref="green" update={this.update} />
-        {this.state.green}
-        <br />
-        <Slider ref="blue" update={this.update} />
-        {this.state.blue}
-        <br />
-        <Button>I <Heart /> React</Button>
+        <button onClick={this.update}>{this.state.val}</button>
       </div>
     )
+  }
+
+  componentDidMount() {
+    // Called when component is already mounted into the DOM
+    console.log("Mounted ..");
+  }
+
+  componentWillUnmount() {
+    // Called when component is unmounted from the DOM
+    console.log("component unmounted ..");
   }
 }
 
@@ -60,7 +63,28 @@ class Button extends React.Component {
 
 const Heart = () => <span className="glyphicon glyphicon-heart">love</span>
 
-export default App
+class Wrapper extends React.Component {
+  constructor(){
+    super();
+  }
+  mount(){
+    ReactDOM.render(<App />, document.getElementById('a'))
+  }
+  unmount() {
+    ReactDOM.unmountComponentAtNode(document.getElementById('a'))
+  }
+  render(){
+    return(
+      <div>
+        <button onClick={this.mount.bind(this)}>Mount</button>
+        <button onClick={this.unmount.bind(this)}>Unmount</button>
+        <div id="a"></div>
+      </div>
+    )
+  }
+}
+
+export default Wrapper
 
 // Things learned till now :-
 // 1. Use of state
@@ -68,3 +92,10 @@ export default App
 // 3. super() must be called within the constructor
 // 4. Use of ref to reffer to an element within the DOM for a Component
 // 5. How ReactDOM.findDOMNode() is used to find DOMNode.
+// 6. Learned usage of component lifecycle callback methods that are automatically invoked when a component transitions from one lifecycle state to other,
+//    methods :
+//      componentWillMount() -> Called when component ready to be mounted
+//      componentDidMount() -> Called after component has been mounted
+//      componentDidMount() -> called when component is unmounted from the dom.
+// Other method i.e. used to umnount a component from DOM
+// ReactDOM.unmountComponentAtNode()
